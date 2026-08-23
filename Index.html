@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" color="black">
+    <style>@font-face { font-family: Jua; src: url('Jua-Regular.TTF'); }
+    * { border: 10px; border-radius: 10px 10px 10px 10px; font-family: Jua;} </style>
+    <link rel="stylesheet" href="Styles.css"/>
+    <title>Document</title>
+</head>
+<body style="background-color: #fdffdc; margin: 0;">
+    <div class="popup" id="projectPopup">
+        <button class="closeButton" onclick="closeProject()">×</button>
+
+        <div class="popupContent" id="projectContent">
+            
+        </div>
+    </div>
+    <div class = "main">
+        <!-- Div for side bar-->
+        <div class="sidebar" style="grid-column: span 2; gap: 100px">
+            <img src="IMG_3291.png" style=" width: 200px; height: 250px; align-self: center;"></img>
+            <box style="display: grid;
+                            align-items: center;
+                            justify-content: center;
+                            align-content: center;
+                            border-radius: 10px 10px 10px 10px;">
+            <p class="sidebarText"> My Work </p>
+            <p class="sidebarText"> Resources</p>
+            <p class="sidebarText"> About Me</p>
+            <p class="sidebarText"> Contact </p>
+            </box>
+        </div>
+        <!-- Div for content-->
+        <div class="contentGrid">
+            <div class="contentBox" onclick="openProject('ProjectNok.html')">
+                <img class="thumbnail" src="49d92160_original.jpg"></img>
+                <div class="shadowBox"></div>
+            </div>
+            <div class="contentBox" onclick="openProject('ProjectNok.html')">
+                <img class="thumbnail" src="AAAHHHH.png"></img>
+                <div class="shadowBox"></div>    
+            </div>
+            <div class="contentBox" onclick="openProject('ProjectNok.html')"> </div>
+            <div class="contentBox" onclick="openProject('ProjectNok.html')"> </div>
+            <div class="contentBox" onclick="openProject('ProjectNok.html')"> </div>
+            <div class="contentBox" onclick="openProject('ProjectNok.html')"> </div>
+            <div class="contentBox" onclick="openProject('ProjectNok.html')"> </div>
+            <div class="contentBox"> </div>
+            <div class="contentBox"> </div>
+        </div>
+    </div>
+<script src="scripts.js"></script>
+</body>
+</html>
