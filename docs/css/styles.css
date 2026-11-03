@@ -1,6 +1,6 @@
 @font-face {
     font-family: "Jua";
-    src: url("../assets/Jua-Regular.ttf") format("truetype");
+    src: url("../assets/fonts/jua-regular.ttf") format("truetype");
     font-display: swap;
 }
 
@@ -269,7 +269,7 @@ button { font: inherit; color: inherit; }
     white-space: nowrap;
     text-overflow: ellipsis;
 }
-.card-title { font-size: clamp(1rem, 7.5cqi, 1.7rem); line-height: 1.15; }
+.card-title { font-size: clamp(.75rem, 5.4cqi, 1.6rem); line-height: 1.15; }
 .card-subtitle { font-size: clamp(.7rem, 4.2cqi, .95rem); opacity: .85; }
 
 .card:focus-visible { translate: 0 -4px; box-shadow: var(--shadow-lift); }
