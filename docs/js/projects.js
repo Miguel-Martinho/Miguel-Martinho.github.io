@@ -67,7 +67,6 @@ const PROJECTS = [
     media: [
       image("vertex-guild-final/corridor-render-01.webp"),
       image("vertex-guild-final/corridor-render-02.webp"),
-      image("vertex-guild-final/corridor-01.webp"),
       image("vertex-guild-final/corridor-02.webp"),
       image("vertex-guild-final/corridor-03.webp"),
       image("vertex-guild-final/corridor-04.webp"),
@@ -92,7 +91,6 @@ const PROJECTS = [
     thumbnail: image("vertex-guild-3-prop/sword-render.webp"),
     media: [
       image("vertex-guild-3-prop/sword-render.webp"),
-      image("vertex-guild-3-prop/sword-01.webp"),
       image("vertex-guild-3-prop/sword-02.webp"),
       image("vertex-guild-3-prop/sword-03.webp"),
     ],
@@ -131,8 +129,6 @@ const PROJECTS = [
     media: [
       image("7-days-to-die-computer/computer-screenshot-02.webp"),
       image("7-days-to-die-computer/computer-screenshot-01.webp"),
-      image("7-days-to-die-computer/computer-01.webp"),
-      image("7-days-to-die-computer/computer-02.webp"),
       image("7-days-to-die-computer/computer-03.webp"),
       image("7-days-to-die-computer/computer-04.webp"),
       image("7-days-to-die-computer/computer-05.webp"),
