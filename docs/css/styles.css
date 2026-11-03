@@ -218,6 +218,8 @@ button { font: inherit; color: inherit; }
     --card-width: calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols));
     /* The same width in container units, so text inside a card can scale with a square card's size */
     --square: calc((100cqi - (var(--cols) - 1) * var(--gap)) / var(--cols));
+    /* Green border around each picture: 5% of a square card, the same on square and wide cards */
+    --frame-size: calc(var(--square) * .05);
     container-type: inline-size;
     display: flex;
     flex-wrap: wrap;
@@ -237,7 +239,7 @@ button { font: inherit; color: inherit; }
     display: block;
     flex: 0 0 var(--card-width);
     aspect-ratio: 1;
-    padding: calc(var(--card-width) * .05);
+    padding: var(--frame-size);
     text-align: left;
     background: var(--frame);
     border: none;
@@ -254,7 +256,7 @@ button { font: inherit; color: inherit; }
 /* Taken out of the flow so the wide picture can't make the row taller than the square cards */
 .card.wide .card-media {
     position: absolute;
-    inset: calc(var(--card-width) * .05);
+    inset: var(--frame-size);
     width: auto;
     height: auto;
 }
