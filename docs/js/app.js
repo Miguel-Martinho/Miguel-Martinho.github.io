@@ -105,10 +105,16 @@ function createCard(project) {
     }
 
     const thumb = thumbnailOf(project);
+    thumb.classList.add("thumb-square");
+    // Shown instead of the square thumbnail when layoutGrids() makes this card wide
+    const wideThumb = project.wideThumbnail &&
+        createMedia(project.wideThumbnail, { decorative: true });
+    wideThumb?.classList.add("thumb-wide");
+
     const card = el("button", {
-        className: "card", type: "button", "aria-label": `Open project: ${project.title}`,
+        className: wideThumb ? "card has-wide" : "card", type: "button", "aria-label": `Open project: ${project.title}`,
         onclick: () => openProject(project.id, true),
-    }, el("div", { className: "card-media" }, thumb,
+    }, el("div", { className: "card-media" }, thumb, wideThumb,
         el("span", { className: "card-label" },
             el("span", { className: "card-title" }, project.title),
             // Always present (blank if there's no subtitle) so every box is the same height
@@ -123,7 +129,29 @@ function renderGrids() {
     document.querySelectorAll(".project-grid[data-category]").forEach(grid => {
         grid.append(...PROJECTS.filter(p => p.category === grid.dataset.category).map(createCard));
     });
+    layoutGrids();
 }
+
+// With 3 per row, a short last row would leave empty space. Instead, some cards become wide
+// (2 slots) so every row is full: each "wide row" holds a wide card plus a square one, alternating
+// sides like a checkerboard, and the remaining cards fill rows of 3.
+// On 2 or 1 per row this is skipped and a short row is simply centered.
+function layoutGrids() {
+    document.querySelectorAll(".project-grid").forEach(grid => {
+        const cards = [...grid.children];
+        cards.forEach(card => card.classList.remove("wide"));
+
+        const cols = parseInt(getComputedStyle(grid).getPropertyValue("--cols"));
+        const wideCount = (cols - cards.length % cols) % cols;
+        if (cols !== 3 || cards.length < wideCount * 2) return;
+
+        for (let row = 0; row < wideCount; row++) {
+            cards[row * 2 + (row % 2)].classList.add("wide");
+        }
+    });
+}
+
+window.addEventListener("resize", layoutGrids);
 
 // ---------- Project viewer ----------
 

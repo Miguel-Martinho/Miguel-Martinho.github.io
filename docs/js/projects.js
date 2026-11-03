@@ -18,6 +18,7 @@
     year, role  shown as small facts in the project view (optional)
     tags        tools / skills, shown as chips (optional)
     thumbnail   what the card in the grid shows: image("…") or video("…")
+    wideThumbnail  optional 16:9 picture used when the card is shown wide (2 slots)
     media       pictures in the project: image("…", "optional caption") or video("…")
     description list of paragraphs
     links       optional buttons: { label, url }
@@ -37,6 +38,7 @@ const PROJECTS = [
     role: "Environment Artist · Programmer",
     tags: ["Environment Art", "Models", "Textures", "Shaders", "Gameplay Programming"],
     thumbnail: video("nok/nok.webm"),
+    wideThumbnail: image("nok/nok-01.webp"),
     media: [
       video("nok/nok.webm"),
       image("nok/nok-01.webp"),
@@ -61,6 +63,7 @@ const PROJECTS = [
     role: "",
     tags: ["Models", "Textures", "Shaders"],
     thumbnail: image("vertex-guild-final/corridor-render-02.webp"),
+    wideThumbnail: image("vertex-guild-final/corridor-03.webp"),
     media: [
       image("vertex-guild-final/corridor-render-01.webp"),
       image("vertex-guild-final/corridor-render-02.webp"),
@@ -104,6 +107,7 @@ const PROJECTS = [
     role: "",
     tags: ["Models", "Textures", "Renders"],
     thumbnail: image("vertex-guild-first/box-01.webp"),
+    wideThumbnail: image("vertex-guild-first/box-01.webp"),
     media: [
       image("vertex-guild-first/box-01.webp"),
       image("vertex-guild-first/box-02.webp"),
@@ -123,6 +127,7 @@ const PROJECTS = [
     role: "",
     tags: ["Models", "Textures", "Renders", "In-engine Implementation"],
     thumbnail: image("7-days-to-die-computer/computer-screenshot-01.webp"),
+    wideThumbnail: image("7-days-to-die-computer/computer-screenshot-02.webp"),
     media: [
       image("7-days-to-die-computer/computer-screenshot-02.webp"),
       image("7-days-to-die-computer/computer-screenshot-01.webp"),
@@ -143,6 +148,7 @@ const PROJECTS = [
     role: "",
     tags: ["Creation Kit", "Modular Workflows", "Lighting & FX"],
     thumbnail: image("skyrim-modding/skyrim-01.jpg"),
+    wideThumbnail: image("skyrim-modding/skyrim-01.jpg"),
     media: [image("skyrim-modding/skyrim-01.jpg")],
     description: [
       "Modding Skyrim with the Creation Kit gave me a better understanding of modular workflows, and of how much light and FX shape the mood of a scene.",

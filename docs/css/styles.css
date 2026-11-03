@@ -34,6 +34,9 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* Browsers don't hide <svg hidden> by themselves; without this the icon sprite adds space below the page */
+[hidden] { display: none !important; }
+
 html { scroll-behavior: smooth; scroll-padding-top: 24px; }
 
 body {
@@ -213,6 +216,9 @@ button { font: inherit; color: inherit; }
     --gap: clamp(16px, 2.5vw, 40px);
     /* One card's width. Used for padding too, since % padding is measured from the row, not the card */
     --card-width: calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols));
+    /* The same width in container units, so text inside a card can scale with a square card's size */
+    --square: calc((100cqi - (var(--cols) - 1) * var(--gap)) / var(--cols));
+    container-type: inline-size;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -240,6 +246,22 @@ button { font: inherit; color: inherit; }
     transition: translate .25s ease, box-shadow .25s ease;
 }
 
+/* Takes 2 slots (set by layoutGrids() in app.js) and shows its 16:9 picture if it has one */
+.card.wide {
+    flex-basis: calc(var(--card-width) * 2 + var(--gap));
+    aspect-ratio: auto; /* stretches to the height of the square card beside it */
+}
+/* Taken out of the flow so the wide picture can't make the row taller than the square cards */
+.card.wide .card-media {
+    position: absolute;
+    inset: calc(var(--card-width) * .05);
+    width: auto;
+    height: auto;
+}
+.thumb-wide,
+.card.wide.has-wide .thumb-square { display: none; }
+.card.wide.has-wide .thumb-wide { display: block; }
+
 .card-media {
     position: relative;
     width: 100%;
@@ -248,7 +270,6 @@ button { font: inherit; color: inherit; }
     border-radius: var(--radius-sm);
     background: var(--surface);
     box-shadow: var(--shadow);
-    container-type: inline-size; /* lets the label text scale with the thumbnail (cqi units) */
 }
 
 /* Square thumbnails: grid cards and "More by" cards */
@@ -270,15 +291,15 @@ button { font: inherit; color: inherit; }
     backdrop-filter: blur(6px);
     transition: opacity .25s ease, translate .25s ease;
 }
-/* One line each, sized to the thumbnail, so every box is the same height */
+/* One line each, sized to a square card (even on wide cards), so every box is the same height */
 .card-label :is(.card-title, .card-subtitle) {
     display: block;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
-.card-title { font-size: clamp(.75rem, 5.4cqi, 1.6rem); line-height: 1.15; }
-.card-subtitle { font-size: clamp(.7rem, 4.2cqi, .95rem); opacity: .85; }
+.card-title { font-size: clamp(.75rem, calc(var(--square) * .0486), 1.6rem); line-height: 1.15; }
+.card-subtitle { font-size: clamp(.7rem, calc(var(--square) * .0378), .95rem); opacity: .85; }
 
 .card:focus-visible { translate: 0 -4px; box-shadow: var(--shadow-lift); }
 
