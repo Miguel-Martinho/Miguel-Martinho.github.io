@@ -64,6 +64,22 @@ const videoObserver = new IntersectionObserver(entries => {
 
 // ---------- Grid ----------
 
+// Grid videos sit still on their first frame and only play while hovered.
+// Phones and tablets can't hover, so there they play while on screen instead.
+const canHover = window.matchMedia("(hover: hover)").matches;
+
+function playOnHover(card, video) {
+    if (!canHover) {
+        videoObserver.observe(video);
+        return;
+    }
+    video.preload = "auto"; // so the first frame shows while it waits
+    card.addEventListener("mouseenter", () => {
+        if (!reducedMotion) video.play().catch(() => {});
+    });
+    card.addEventListener("mouseleave", () => video.pause());
+}
+
 function renderGrid() {
     for (const project of PROJECTS) {
         const card = el(project.comingSoon ? "div" : "button", "card");
@@ -78,7 +94,7 @@ function renderGrid() {
             const thumb = createMedia(project.thumbnail || project.media[0]);
             thumb.alt = "";
             media.append(thumb);
-            if (thumb.tagName === "VIDEO") videoObserver.observe(thumb);
+            if (thumb.tagName === "VIDEO") playOnHover(card, thumb);
 
             const label = el("span", "card-label");
             label.append(el("span", "card-title", project.title));

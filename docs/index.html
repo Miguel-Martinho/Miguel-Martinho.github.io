@@ -6,7 +6,8 @@
     <meta name="theme-color" content="#deebca">
     <meta name="description" content="Portfolio of Miguel Martinho: environment art, props, game development and modding.">
     <title>Miguel Martinho · Portfolio</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <!-- Bump ?v= whenever the CSS/JS changes, so browsers don't mix old cached files with the new page -->
+    <link rel="stylesheet" href="css/styles.css?v=5">
 </head>
 <body>
     <a class="skip-link" href="#work">Skip to content</a>
@@ -30,12 +31,9 @@
         </header>
 
         <main class="content">
-            <section id="work" class="section">
-                <h2 class="section-title">My Work</h2>
-                <div class="panel">
-                    <!-- Cards are generated from js/projects.js -->
-                    <div class="project-grid" id="projectGrid"></div>
-                </div>
+            <section id="work" class="section" aria-label="My Work">
+                <!-- Cards are generated from js/projects.js -->
+                <div class="project-grid" id="projectGrid"></div>
             </section>
 
             <section id="resources" class="section">
@@ -106,7 +104,8 @@
         </div>
     </dialog>
 
-    <script src="js/projects.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/projects.js?v=5"></script>
+    <script src="js/app.js?v=5"></script>
+
 </body>
 </html>

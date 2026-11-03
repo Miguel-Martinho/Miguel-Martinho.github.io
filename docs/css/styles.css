@@ -126,19 +126,35 @@ a { color: inherit; }
 
 .content {
     min-width: 0;
-    padding: 48px clamp(16px, 4vw, 64px);
+    padding: 40px clamp(16px, 2.5vw, 40px) 40px clamp(16px, 2vw, 28px);
 }
 
 .section {
-    max-width: 1300px;
-    margin: 0 auto 80px;
+    margin: 0 0 80px;
 }
 
+/* Boxed like the sidebar buttons, centered, jiggles on hover */
 .section-title {
-    margin: 0 0 24px;
-    font-size: clamp(2rem, 4vw, 2.75rem);
+    display: block;
+    width: fit-content;
+    margin: 0 auto 28px;
+    padding: 10px 28px;
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
     font-weight: 400;
     line-height: 1.1;
+    background: var(--mint);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+    cursor: default;
+}
+.section-title:hover { animation: jiggle .5s ease-in-out; }
+
+@keyframes jiggle {
+    0%, 100% { transform: rotate(0); }
+    20% { transform: rotate(-4deg) scale(1.04); }
+    40% { transform: rotate(3deg) scale(1.04); }
+    60% { transform: rotate(-2deg) scale(1.02); }
+    80% { transform: rotate(1deg); }
 }
 
 .panel {
@@ -179,8 +195,15 @@ a { color: inherit; }
 
 .project-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
-    gap: clamp(16px, 2.5vw, 36px);
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* 2 on tablets, 1 on phones (see below) */
+    gap: clamp(16px, 2.5vw, 40px);
+}
+
+@media (max-width: 900px) {
+    .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+    .project-grid { grid-template-columns: 1fr; }
 }
 
 .card {
@@ -217,20 +240,35 @@ a { color: inherit; }
     transition: transform .4s ease;
 }
 
+/* See-through box behind the title so it stays readable on any picture */
 .card-label {
     position: absolute;
-    inset: auto 0 0 0;
-    padding: 40px 16px 14px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    padding: 10px 14px;
     color: var(--white);
-    background: linear-gradient(to top, rgba(0, 0, 0, .75), rgba(0, 0, 0, 0));
+    background: rgba(20, 26, 21, .55);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    border-radius: var(--radius-sm);
+    transition: opacity .25s ease, transform .25s ease;
 }
-.card-title { display: block; font-size: 1.5rem; line-height: 1.15; }
-.card-subtitle { display: block; font-size: 1rem; opacity: .85; }
+.card-title { display: block; font-size: clamp(1.25rem, 1.6vw, 1.7rem); line-height: 1.15; }
+.card-subtitle { display: block; font-size: clamp(.9rem, 1vw, 1.05rem); opacity: .85; }
 
 .card:hover,
 .card:focus-visible { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
 .card:hover .card-media img,
 .card:hover .card-media video { transform: scale(1.04); }
+
+/* On hover the text and its box fade away to show the whole picture */
+@media (hover: hover) {
+    .card:hover .card-label {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}
 
 .card.coming-soon { cursor: default; }
 .card.coming-soon:hover { transform: none; box-shadow: none; }
