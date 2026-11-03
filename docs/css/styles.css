@@ -364,11 +364,12 @@ button { font: inherit; color: inherit; }
 }
 
 .media-item { margin: 0; }
+/* Every image sits in a 16:9 frame: tall or square ones shrink to fit instead of being blown up */
 .media-item :is(img, video) {
     width: 100%;
-    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
     border-radius: 4px;
-    background: #1f2620;
 }
 .media-item button {
     display: block;
