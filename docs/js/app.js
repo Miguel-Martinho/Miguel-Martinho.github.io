@@ -1,26 +1,30 @@
 // Builds the project grid and the project viewer from the PROJECTS list in projects.js.
 
-const grid = document.getElementById("projectGrid");
-const modal = document.getElementById("projectModal");
-const viewerLayout = document.getElementById("viewerLayout");
-const viewerMedia = document.getElementById("viewerMedia");
-const modalInfo = document.getElementById("modalInfo");
+const $ = id => document.getElementById(id);
 
-const lightbox = document.getElementById("lightbox");
-const carousel = document.getElementById("carousel");
-const track = document.getElementById("carouselTrack");
-const dots = document.getElementById("carouselDots");
-const counter = document.getElementById("carouselCounter");
-const prevButton = document.getElementById("carouselPrev");
-const nextButton = document.getElementById("carouselNext");
+const grid = $("projectGrid");
+const modal = $("projectModal");
+const viewerLayout = $("viewerLayout");
+const viewerMedia = $("viewerMedia");
+const modalInfo = $("modalInfo");
 
+const lightbox = $("lightbox");
+const carousel = $("carousel");
+const track = $("carouselTrack");
+const dots = $("carouselDots");
+const counter = $("carouselCounter");
+const prevButton = $("carouselPrev");
+const nextButton = $("carouselNext");
+
+// Name, role and picture come from the sidebar, so they only need changing in index.html
 const AUTHOR = {
-    name: "Miguel Martinho",
-    role: "3D & Environment Artist",
-    picture: "assets/IMG_3291.png",
+    name: document.querySelector(".profile-name").textContent,
+    role: document.querySelector(".profile-role").textContent,
+    picture: document.querySelector(".profile-pic").getAttribute("src"),
 };
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const canHover = window.matchMedia("(hover: hover)").matches;
 const openProjects = PROJECTS.filter(p => !p.comingSoon);
 
 let currentProject = null;
@@ -28,179 +32,145 @@ let currentSlide = 0;
 let slideCount = 0;
 let lastFocused = null;
 
-function el(tag, className, text) {
+// ---------- Helpers ----------
+
+// el("button", { className: "dot", "aria-label": "…", onclick: fn }, child, "text", …)
+// Props become properties when the element has one (src, type, hidden…), attributes otherwise,
+// and "on…" props become event listeners. Empty children are skipped.
+function el(tag, props = {}, ...children) {
     const node = document.createElement(tag);
-    if (className) node.className = className;
-    if (text) node.textContent = text;
+    for (const [key, value] of Object.entries(props)) {
+        if (value == null) continue;
+        if (key.startsWith("on")) node.addEventListener(key.slice(2), value);
+        else if (key in node) node[key] = value;
+        else node.setAttribute(key, value);
+    }
+    node.append(...children.filter(child => child != null && child !== ""));
     return node;
 }
 
-function createMedia(item, { eager = false } = {}) {
+function createMedia(item, { eager = false, decorative = false } = {}) {
+    const label = decorative ? "" : item.caption || "";
     if (item.type === "video") {
-        const video = el("video");
-        video.src = item.src;
-        video.muted = true;
-        video.loop = true;
-        video.playsInline = true;
-        video.preload = eager ? "auto" : "metadata";
-        video.setAttribute("aria-label", item.caption || "");
-        return video;
+        return el("video", {
+            src: item.src, muted: true, loop: true, playsInline: true,
+            preload: eager ? "auto" : "metadata", "aria-label": label,
+        });
     }
-    const img = el("img");
-    img.src = item.src;
-    img.alt = item.caption || "";
-    img.decoding = "async";
-    if (!eager) img.loading = "lazy";
-    return img;
+    return el("img", { src: item.src, alt: label, decoding: "async", loading: eager ? null : "lazy" });
+}
+
+const thumbnailOf = project => createMedia(project.thumbnail || project.media[0], { decorative: true });
+
+function play(video) {
+    if (!reducedMotion) video.play().catch(() => {});
+}
+
+function pauseVideos(container) {
+    container.querySelectorAll("video").forEach(video => video.pause());
 }
 
 // Videos only play while they are on screen
 const videoObserver = new IntersectionObserver(entries => {
     for (const entry of entries) {
-        if (entry.isIntersecting && !reducedMotion) entry.target.play().catch(() => {});
+        if (entry.isIntersecting) play(entry.target);
         else entry.target.pause();
     }
 }, { threshold: 0.25 });
+
+function observeVideos(container) {
+    container.querySelectorAll("video").forEach(video => videoObserver.observe(video));
+}
+
+function unobserveVideos(container) {
+    container.querySelectorAll("video").forEach(video => videoObserver.unobserve(video));
+}
 
 // ---------- Grid ----------
 
 // Grid videos sit still on their first frame and only play while hovered.
 // Phones and tablets can't hover, so there they play while on screen instead.
-const canHover = window.matchMedia("(hover: hover)").matches;
-
 function playOnHover(card, video) {
-    if (!canHover) {
-        videoObserver.observe(video);
-        return;
-    }
+    if (!canHover) return videoObserver.observe(video);
     video.preload = "auto"; // so the first frame shows while it waits
-    card.addEventListener("mouseenter", () => {
-        if (!reducedMotion) video.play().catch(() => {});
-    });
+    card.addEventListener("mouseenter", () => play(video));
     card.addEventListener("mouseleave", () => video.pause());
 }
 
 function renderGrid() {
-    for (const project of PROJECTS) {
-        const card = el(project.comingSoon ? "div" : "button", "card");
-        const media = el("div", "card-media");
-
+    grid.append(...PROJECTS.map(project => {
         if (project.comingSoon) {
-            card.classList.add("coming-soon");
-            media.append(el("span", "card-title", project.title), el("span", "badge", "Coming soon"));
-        } else {
-            card.type = "button";
-            card.setAttribute("aria-label", `Open project: ${project.title}`);
-            const thumb = createMedia(project.thumbnail || project.media[0]);
-            thumb.alt = "";
-            media.append(thumb);
-            if (thumb.tagName === "VIDEO") playOnHover(card, thumb);
-
-            const label = el("span", "card-label");
-            label.append(el("span", "card-title", project.title));
-            if (project.subtitle) label.append(el("span", "card-subtitle", project.subtitle));
-            media.append(label);
-
-            card.addEventListener("click", () => openProject(project.id, true));
+            return el("div", { className: "card coming-soon" },
+                el("div", { className: "card-media" },
+                    el("span", { className: "card-title" }, project.title),
+                    el("span", { className: "badge" }, "Coming soon")));
         }
 
-        card.append(media);
-        grid.append(card);
-    }
+        const thumb = thumbnailOf(project);
+        const card = el("button", {
+            className: "card", type: "button", "aria-label": `Open project: ${project.title}`,
+            onclick: () => openProject(project.id, true),
+        }, el("div", { className: "card-media" }, thumb,
+            el("span", { className: "card-label" },
+                el("span", { className: "card-title" }, project.title),
+                // Always present (blank if there's no subtitle) so every box is the same height
+                el("span", { className: "card-subtitle" }, project.subtitle || " "))));
+
+        if (thumb.tagName === "VIDEO") playOnHover(card, thumb);
+        return card;
+    }));
 }
 
 // ---------- Project viewer ----------
 
 function renderMedia(project) {
-    viewerMedia.querySelectorAll("video").forEach(v => videoObserver.unobserve(v));
-    viewerMedia.replaceChildren();
-
-    // Title above the images, only shown on phones
-    const mobileHeader = el("div", "viewer-mobile-header");
-    mobileHeader.append(el("h2", null, project.title));
-    if (project.subtitle) mobileHeader.append(el("p", null, project.subtitle));
-    viewerMedia.append(mobileHeader);
-
-    const stack = el("div", "media-stack");
-    project.media.forEach((item, i) => {
-        const figure = el("figure", "media-item");
-        const button = el("button");
-        button.type = "button";
-        button.setAttribute("aria-label", `View image ${i + 1} fullscreen`);
-        const media = createMedia(item, { eager: i === 0 });
-        button.append(media);
-        button.addEventListener("click", () => openLightbox(i));
-        figure.append(button);
-        if (item.caption) figure.append(el("figcaption", null, item.caption));
-        stack.append(figure);
-        if (media.tagName === "VIDEO") videoObserver.observe(media);
-    });
-    viewerMedia.append(stack);
+    unobserveVideos(viewerMedia);
+    viewerMedia.replaceChildren(
+        // Title above the images, only shown on phones
+        el("div", { className: "viewer-mobile-header" },
+            el("h2", {}, project.title),
+            project.subtitle && el("p", {}, project.subtitle)),
+        el("div", { className: "media-stack" }, ...project.media.map((item, i) =>
+            el("figure", { className: "media-item" },
+                el("button", { type: "button", "aria-label": `View image ${i + 1} fullscreen`, onclick: () => openLightbox(i) },
+                    createMedia(item, { eager: i === 0 })),
+                item.caption && el("figcaption", {}, item.caption)))),
+    );
+    observeVideos(viewerMedia);
 }
 
 function renderInfo(project) {
-    modalInfo.replaceChildren();
-
-    const author = el("div", "author");
-    const avatar = el("img");
-    avatar.src = AUTHOR.picture;
-    avatar.alt = "";
-    const authorText = el("div");
-    authorText.append(el("span", "author-name", AUTHOR.name), el("span", "author-role", AUTHOR.role));
-    author.append(avatar, authorText);
-    modalInfo.append(author);
-
-    const title = el("h1", null, project.title);
-    title.id = "modalTitle";
-    modalInfo.append(title);
-    if (project.subtitle) modalInfo.append(el("p", "modal-subtitle", project.subtitle));
-
-    const description = el("div", "description");
-    for (const paragraph of project.description || []) description.append(el("p", null, paragraph));
-    modalInfo.append(description);
-
     const facts = [["Year", project.year], ["Role", project.role]].filter(([, value]) => value);
-    if (facts.length) {
-        const dl = el("dl", "facts");
-        for (const [term, value] of facts) dl.append(el("dt", null, term), el("dd", null, value));
-        modalInfo.append(dl);
-    }
-
-    if (project.tags?.length) {
-        const tags = el("ul", "tags");
-        for (const tag of project.tags) tags.append(el("li", null, tag));
-        modalInfo.append(tags);
-    }
-
-    if (project.links?.length) {
-        const links = el("div", "project-links");
-        for (const link of project.links) {
-            const a = el("a", "button", link.label);
-            a.href = link.url;
-            a.target = "_blank";
-            a.rel = "noopener";
-            links.append(a);
-        }
-        modalInfo.append(links);
-    }
-
-    // Other projects, like "More by this artist"
     const others = openProjects.filter(p => p.id !== project.id);
-    if (others.length) {
-        modalInfo.append(el("h2", "info-heading", `More by ${AUTHOR.name}`));
-        const more = el("div", "more-grid");
-        for (const other of others) {
-            const card = el("button", "more-card");
-            card.type = "button";
-            card.setAttribute("aria-label", `Open project: ${other.title}`);
-            const thumb = createMedia(other.thumbnail || other.media[0]);
-            thumb.alt = "";
-            card.append(thumb, el("span", null, other.title));
-            card.addEventListener("click", () => switchProject(other.id));
-            more.append(card);
-        }
-        modalInfo.append(more);
-    }
+
+    modalInfo.replaceChildren(...[
+        el("div", { className: "author" },
+            el("img", { src: AUTHOR.picture, alt: "" }),
+            el("div", {},
+                el("span", { className: "author-name" }, AUTHOR.name),
+                el("span", { className: "author-role" }, AUTHOR.role))),
+
+        el("h1", { id: "modalTitle" }, project.title),
+        project.subtitle && el("p", { className: "modal-subtitle" }, project.subtitle),
+
+        el("div", { className: "description" }, ...(project.description || []).map(text => el("p", {}, text))),
+
+        facts.length && el("dl", { className: "facts" },
+            ...facts.flatMap(([term, value]) => [el("dt", {}, term), el("dd", {}, value)])),
+
+        project.tags?.length && el("ul", { className: "tags" }, ...project.tags.map(tag => el("li", {}, tag))),
+
+        project.links?.length && el("div", { className: "project-links" }, ...project.links.map(link =>
+            el("a", { className: "button", href: link.url, target: "_blank", rel: "noopener" }, link.label))),
+
+        // Other projects, like "More by this artist"
+        others.length && el("h2", { className: "info-heading" }, `More by ${AUTHOR.name}`),
+        others.length && el("div", { className: "more-grid" }, ...others.map(other =>
+            el("button", {
+                className: "more-card", type: "button", "aria-label": `Open project: ${other.title}`,
+                onclick: () => switchProject(other.id),
+            }, thumbnailOf(other), el("span", {}, other.title)))),
+    ].filter(Boolean));
 }
 
 function openProject(id, fromGrid = false) {
@@ -216,9 +186,7 @@ function openProject(id, fromGrid = false) {
     closeLightbox();
     renderMedia(project);
     renderInfo(project);
-    viewerMedia.scrollTop = 0;
-    modalInfo.scrollTop = 0;
-    viewerLayout.scrollTop = 0;
+    for (const scroller of [viewerMedia, modalInfo, viewerLayout]) scroller.scrollTop = 0;
 
     if (!modal.open) modal.showModal();
     document.body.classList.add("modal-open");
@@ -233,40 +201,35 @@ function switchProject(id) {
 
 function stepProject(direction) {
     const index = openProjects.indexOf(currentProject);
-    const next = openProjects[(index + direction + openProjects.length) % openProjects.length];
-    switchProject(next.id);
+    switchProject(openProjects[(index + direction + openProjects.length) % openProjects.length].id);
 }
-
-document.getElementById("projectPrev").addEventListener("click", () => stepProject(-1));
-document.getElementById("projectNext").addEventListener("click", () => stepProject(1));
 
 function hideModal() {
     closeLightbox();
     document.body.classList.remove("modal-open");
-    modal.querySelectorAll("video").forEach(v => v.pause());
+    pauseVideos(modal);
     if (modal.open) modal.close();
-    if (lastFocused) lastFocused.focus({ preventScroll: true });
+    lastFocused?.focus({ preventScroll: true });
     lastFocused = null;
 }
 
 // Closing goes back in history when the viewer was opened from the grid,
 // so the phone's back button and the X behave the same.
 function closeProject() {
-    if (history.state?.project) {
-        history.back();
-    } else {
-        history.replaceState(null, "", location.pathname + location.search + "#work");
-        hideModal();
-    }
+    if (history.state?.project) return history.back();
+    history.replaceState(null, "", location.pathname + location.search + "#work");
+    hideModal();
 }
+
+$("projectPrev").addEventListener("click", () => stepProject(-1));
+$("projectNext").addEventListener("click", () => stepProject(1));
+$("modalClose").addEventListener("click", closeProject);
 
 // Safety net in case the browser closes the dialog by itself (e.g. pressing Esc twice quickly)
 modal.addEventListener("close", () => {
     if (location.hash.startsWith("#project/")) closeProject();
     else hideModal();
 });
-
-document.getElementById("modalClose").addEventListener("click", closeProject);
 
 // Esc closes the fullscreen image first, then the project
 modal.addEventListener("cancel", event => {
@@ -275,9 +238,10 @@ modal.addEventListener("cancel", event => {
     else closeProject();
 });
 
+// ← / → move between images in fullscreen, otherwise between projects
 modal.addEventListener("keydown", event => {
-    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-    const direction = event.key === "ArrowLeft" ? -1 : 1;
+    const direction = { ArrowLeft: -1, ArrowRight: 1 }[event.key];
+    if (!direction) return;
     event.preventDefault();
     if (!lightbox.hidden) goToSlide(currentSlide + direction);
     else stepProject(direction);
@@ -286,27 +250,18 @@ modal.addEventListener("keydown", event => {
 // ---------- Fullscreen lightbox ----------
 
 function openLightbox(index) {
-    track.replaceChildren();
-    dots.replaceChildren();
-    slideCount = currentProject.media.length;
+    const media = currentProject.media;
+    slideCount = media.length;
 
-    currentProject.media.forEach((item, i) => {
-        const slide = el("div", "slide");
-        slide.setAttribute("role", "group");
-        slide.setAttribute("aria-label", `${i + 1} of ${slideCount}`);
-        slide.append(createMedia(item, { eager: Math.abs(i - index) <= 1 }));
-        if (item.caption) slide.append(el("p", "slide-caption", item.caption));
-        track.append(slide);
-
-        const dot = el("button", "dot");
-        dot.type = "button";
-        dot.setAttribute("aria-label", `Go to image ${i + 1}`);
-        dot.addEventListener("click", () => goToSlide(i));
-        dots.append(dot);
-    });
+    track.replaceChildren(...media.map((item, i) =>
+        el("div", { className: "slide", role: "group", "aria-label": `${i + 1} of ${slideCount}` },
+            createMedia(item, { eager: Math.abs(i - index) <= 1 }),
+            item.caption && el("p", { className: "slide-caption" }, item.caption))));
+    dots.replaceChildren(...media.map((_, i) =>
+        el("button", { className: "dot", type: "button", "aria-label": `Go to image ${i + 1}`, onclick: () => goToSlide(i) })));
 
     carousel.classList.toggle("single", slideCount <= 1);
-    modal.querySelectorAll(".viewer-media video").forEach(v => v.pause());
+    pauseVideos(viewerMedia);
     lightbox.hidden = false;
     currentSlide = index;
     track.scrollLeft = index * track.clientWidth;
@@ -317,13 +272,11 @@ function openLightbox(index) {
 function closeLightbox() {
     if (lightbox.hidden) return;
     lightbox.hidden = true;
-    track.querySelectorAll("video").forEach(v => v.pause());
+    pauseVideos(track);
     track.replaceChildren();
-    // Let the observer restart whichever stacked videos are visible
-    viewerMedia.querySelectorAll("video").forEach(v => {
-        videoObserver.unobserve(v);
-        videoObserver.observe(v);
-    });
+    // Re-observing makes the observer restart whichever stacked videos are visible
+    unobserveVideos(viewerMedia);
+    observeVideos(viewerMedia);
 }
 
 function goToSlide(index) {
@@ -335,28 +288,25 @@ function updateCarouselUI() {
     prevButton.disabled = currentSlide === 0;
     nextButton.disabled = currentSlide === slideCount - 1;
     counter.textContent = `${currentSlide + 1} / ${slideCount}`;
-    [...dots.children].forEach((dot, i) => dot.setAttribute("aria-current", String(i === currentSlide)));
+    [...dots.children].forEach((dot, i) => dot.setAttribute("aria-current", i === currentSlide));
 
     // Only the visible video plays
     [...track.children].forEach((slide, i) => {
         const video = slide.querySelector("video");
-        if (!video) return;
-        if (i === currentSlide && !reducedMotion) video.play().catch(() => {});
-        else video.pause();
+        if (video) i === currentSlide ? play(video) : video.pause();
     });
 }
 
 track.addEventListener("scroll", () => {
     const index = Math.round(track.scrollLeft / track.clientWidth);
-    if (index !== currentSlide) {
-        currentSlide = index;
-        updateCarouselUI();
-    }
+    if (index === currentSlide) return;
+    currentSlide = index;
+    updateCarouselUI();
 }, { passive: true });
 
 prevButton.addEventListener("click", () => goToSlide(currentSlide - 1));
 nextButton.addEventListener("click", () => goToSlide(currentSlide + 1));
-document.getElementById("lightboxClose").addEventListener("click", closeLightbox);
+$("lightboxClose").addEventListener("click", closeLightbox);
 
 // Clicking the dark area around a fullscreen image closes it
 track.addEventListener("click", event => {
@@ -382,21 +332,20 @@ window.addEventListener("popstate", syncWithUrl);
 
 function trackActiveSection() {
     const links = [...document.querySelectorAll(".nav-link")];
-    const sections = links.map(link => document.querySelector(link.getAttribute("href")));
 
     const observer = new IntersectionObserver(entries => {
         for (const entry of entries) {
             if (!entry.isIntersecting) continue;
-            links.forEach(link => link.classList.toggle("active", link.getAttribute("href") === `#${entry.target.id}`));
+            links.forEach(link => link.classList.toggle("active", link.hash === `#${entry.target.id}`));
         }
     }, { rootMargin: "-40% 0px -55% 0px" });
 
-    sections.forEach(section => section && observer.observe(section));
+    links.forEach(link => observer.observe(document.querySelector(link.hash)));
 }
 
 // ---------- Start ----------
 
-document.getElementById("year").textContent = new Date().getFullYear();
+$("year").textContent = new Date().getFullYear();
 renderGrid();
 trackActiveSection();
 syncWithUrl();

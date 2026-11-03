@@ -40,7 +40,7 @@ const PROJECTS = [
   },
   {
     id: "vertex-guild-final",
-    title: "Vertex Guild — Final",
+    title: "Vertex Guild · Final",
     subtitle: "Environment scene",
     year: "",
     role: "",
@@ -54,7 +54,7 @@ const PROJECTS = [
   },
   {
     id: "vertex-guild-3-prop",
-    title: "Vertex Guild — 3 Prop",
+    title: "Vertex Guild · 3 Prop",
     subtitle: "Prop study",
     year: "",
     role: "",
@@ -77,22 +77,8 @@ const PROJECTS = [
     ],
     description: ["Add a description of this project here."],
   },
-  {
-    id: "vertex-guild-first",
-    title: "Vertex Guild — First Project",
-    subtitle: "",
-    comingSoon: true,
-  },
-  {
-    id: "navictus",
-    title: "Navictus",
-    subtitle: "",
-    comingSoon: true,
-  },
-  {
-    id: "redacted-limb",
-    title: "[Redacted LIMB]",
-    subtitle: "",
-    comingSoon: true,
-  },
+  // Coming soon: only a title is needed until the project is ready
+  { id: "vertex-guild-first", title: "Vertex Guild · First Project", comingSoon: true },
+  { id: "navictus", title: "Navictus", comingSoon: true },
+  { id: "redacted-limb", title: "[Redacted LIMB]", comingSoon: true },
 ];
