@@ -5,6 +5,8 @@
 }
 
 :root {
+    --page-bg: #838663; /* page background */
+
     /* Palette taken from the original site */
     --cream: #fdffdc;
     --sage: #deebca;
@@ -38,7 +40,7 @@ body {
     margin: 0;
     font-family: var(--font);
     color: var(--ink);
-    background: var(--cream);
+    background: var(--page-bg);
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
 }
@@ -199,7 +201,7 @@ button { font: inherit; color: inherit; }
 .button-ghost { color: var(--ink); background: transparent; }
 
 .footer {
-    color: var(--ink-soft);
+    color: var(--cream); /* sits straight on the page background */
     text-align: center;
 }
 
