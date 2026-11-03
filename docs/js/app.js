@@ -118,7 +118,7 @@ function createCard(project) {
     return card;
 }
 
-// Each grid (Portfolio, Experience) shows the projects whose category matches its data-category
+// Each grid (Portfolio, Experiences) shows the projects whose category matches its data-category
 function renderGrids() {
     document.querySelectorAll(".project-grid[data-category]").forEach(grid => {
         grid.append(...PROJECTS.filter(p => p.category === grid.dataset.category).map(createCard));

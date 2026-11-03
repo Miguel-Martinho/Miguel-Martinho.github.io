@@ -12,7 +12,7 @@
   Fields:
     id          unique, url-safe name, also the project's assets folder
                 (used in the link too, e.g. index.html#project/nok)
-    category    "portfolio" or "experience": which section of the page it appears in
+    category    "portfolio" or "experiences": which section of the page it appears in
     title       big title on the card and project view
     subtitle    one short line under the title
     year, role  shown as small facts in the project view (optional)
@@ -30,7 +30,7 @@ const video = (file, caption) => ({ type: "video", src: `assets/projects/${file}
 const PROJECTS = [
   {
     id: "nok",
-    category: "experience",
+    category: "experiences",
     title: "Nok",
     subtitle: "3D point & click hidden object game",
     year: "2025",
@@ -136,7 +136,7 @@ const PROJECTS = [
   },
   {
     id: "skyrim-modding",
-    category: "experience",
+    category: "experiences",
     title: "Skyrim Modding",
     subtitle: "Creation Kit level design",
     year: "",
@@ -150,7 +150,7 @@ const PROJECTS = [
   },
   {
     id: "vermintide-modding",
-    category: "experience",
+    category: "experiences",
     title: "Vermintide 2 Modding",
     subtitle: "Weapon mods",
     year: "",
@@ -173,6 +173,6 @@ const PROJECTS = [
     ],
   },
   // Coming soon: only a title is needed until the project is ready
-  { id: "navictus", category: "experience", title: "Navictus", comingSoon: true },
-  { id: "redacted", category: "experience", title: "[Redacted]", comingSoon: true },
+  { id: "navictus", category: "experiences", title: "Navictus", comingSoon: true },
+  { id: "redacted", category: "experiences", title: "[Redacted]", comingSoon: true },
 ];
