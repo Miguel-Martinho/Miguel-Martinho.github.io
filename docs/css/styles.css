@@ -663,7 +663,7 @@ button { font: inherit; color: inherit; }
 /* ---------- Mobile ---------- */
 
 @media (max-width: 760px) {
-    html { scroll-padding-top: 130px; }
+    html { scroll-padding-top: 172px; } /* clears the sticky top bar */
 
     .layout { display: block; }
 
@@ -680,14 +680,13 @@ button { font: inherit; color: inherit; }
     .profile-name { font-size: 1.3rem; }
     .profile-role { font-size: .9rem; }
 
+    /* Buttons wrap onto a second row on narrow phones, so every one stays visible */
     .nav {
         flex-direction: row;
+        flex-wrap: wrap;
         gap: 6px;
-        overflow-x: auto;
-        scrollbar-width: none;
     }
-    .nav::-webkit-scrollbar { display: none; }
-    .nav-link { flex: 1 0 auto; padding: 6px 8px; font-size: 1rem; }
+    .nav-link { flex: 1 0 auto; padding: 6px 10px; font-size: 1rem; }
 
     .content { padding-top: 28px; }
     .section { margin-bottom: 56px; }

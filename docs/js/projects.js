@@ -12,6 +12,7 @@
   Fields:
     id          unique, url-safe name, also the project's assets folder
                 (used in the link too, e.g. index.html#project/nok)
+    category    "portfolio" or "experience": which section of the page it appears in
     title       big title on the card and project view
     subtitle    one short line under the title
     year, role  shown as small facts in the project view (optional)
@@ -29,6 +30,7 @@ const video = (file, caption) => ({ type: "video", src: `assets/projects/${file}
 const PROJECTS = [
   {
     id: "nok",
+    category: "experience",
     title: "Nok",
     subtitle: "3D point & click hidden object game",
     year: "2025",
@@ -52,6 +54,7 @@ const PROJECTS = [
   },
   {
     id: "vertex-guild-final",
+    category: "portfolio",
     title: "Vertex Guild · Final",
     subtitle: "Corridor",
     year: "",
@@ -77,6 +80,7 @@ const PROJECTS = [
   },
   {
     id: "vertex-guild-3-prop",
+    category: "portfolio",
     title: "Vertex Guild · 3 Prop",
     subtitle: "Sword & Crown",
     year: "",
@@ -93,6 +97,7 @@ const PROJECTS = [
   },
   {
     id: "vertex-guild-first",
+    category: "portfolio",
     title: "Vertex Guild · First Project",
     subtitle: "Apothecary Box",
     year: "",
@@ -110,25 +115,27 @@ const PROJECTS = [
     description: ["Add a description of this project here."],
   },
   {
-    id: "modding",
-    title: "Modding",
-    subtitle: "7 Days to Die, Vermintide, Skyrim",
+    id: "7-days-to-die-computer",
+    category: "portfolio",
+    title: "7 Days to Die Computer",
+    subtitle: "Game mod",
     year: "",
     role: "",
     tags: ["Models", "Textures", "Renders", "In-engine Implementation"],
-    thumbnail: image("modding/computer-screenshot-01.webp"),
+    thumbnail: image("7-days-to-die-computer/computer-screenshot-01.webp"),
     media: [
-      image("modding/computer-screenshot-02.webp"),
-      image("modding/computer-screenshot-01.webp"),
-      image("modding/computer-01.webp"),
-      image("modding/computer-02.webp"),
-      image("modding/computer-03.webp"),
-      image("modding/computer-04.webp"),
-      image("modding/computer-05.webp"),
+      image("7-days-to-die-computer/computer-screenshot-02.webp"),
+      image("7-days-to-die-computer/computer-screenshot-01.webp"),
+      image("7-days-to-die-computer/computer-01.webp"),
+      image("7-days-to-die-computer/computer-02.webp"),
+      image("7-days-to-die-computer/computer-03.webp"),
+      image("7-days-to-die-computer/computer-04.webp"),
+      image("7-days-to-die-computer/computer-05.webp"),
     ],
-    description: ["Computer: a 7 Days to Die mod.", "Add more about your modding work here."],
+    description: ["A computer made for a 7 Days to Die mod, from modelling and texturing to getting it working in the game.", "Add more about this project here."],
   },
   // Coming soon: only a title is needed until the project is ready
-  { id: "navictus", title: "Navictus", comingSoon: true },
-  { id: "redacted-limb", title: "[Redacted LIMB]", comingSoon: true },
+  { id: "skyrim-modding", category: "experience", title: "Skyrim Modding", comingSoon: true },
+  { id: "navictus", category: "experience", title: "Navictus", comingSoon: true },
+  { id: "redacted", category: "experience", title: "[Redacted]", comingSoon: true },
 ];

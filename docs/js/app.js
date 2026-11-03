@@ -1,8 +1,7 @@
-// Builds the project grid and the project viewer from the PROJECTS list in projects.js.
+// Builds the project grids and the project viewer from the PROJECTS list in projects.js.
 
 const $ = id => document.getElementById(id);
 
-const grid = $("projectGrid");
 const modal = $("projectModal");
 const viewerLayout = $("viewerLayout");
 const viewerMedia = $("viewerMedia");
@@ -97,28 +96,33 @@ function playOnHover(card, video) {
     card.addEventListener("mouseleave", () => video.pause());
 }
 
-function renderGrid() {
-    grid.append(...PROJECTS.map(project => {
-        if (project.comingSoon) {
-            return el("div", { className: "card coming-soon" },
-                el("div", { className: "card-media" },
-                    el("span", { className: "card-title" }, project.title),
-                    el("span", { className: "badge" }, "Coming soon")));
-        }
-
-        const thumb = thumbnailOf(project);
-        const card = el("button", {
-            className: "card", type: "button", "aria-label": `Open project: ${project.title}`,
-            onclick: () => openProject(project.id, true),
-        }, el("div", { className: "card-media" }, thumb,
-            el("span", { className: "card-label" },
+function createCard(project) {
+    if (project.comingSoon) {
+        return el("div", { className: "card coming-soon" },
+            el("div", { className: "card-media" },
                 el("span", { className: "card-title" }, project.title),
-                // Always present (blank if there's no subtitle) so every box is the same height
-                el("span", { className: "card-subtitle" }, project.subtitle || " "))));
+                el("span", { className: "badge" }, "Coming soon")));
+    }
 
-        if (thumb.tagName === "VIDEO") playOnHover(card, thumb);
-        return card;
-    }));
+    const thumb = thumbnailOf(project);
+    const card = el("button", {
+        className: "card", type: "button", "aria-label": `Open project: ${project.title}`,
+        onclick: () => openProject(project.id, true),
+    }, el("div", { className: "card-media" }, thumb,
+        el("span", { className: "card-label" },
+            el("span", { className: "card-title" }, project.title),
+            // Always present (blank if there's no subtitle) so every box is the same height
+            el("span", { className: "card-subtitle" }, project.subtitle || " "))));
+
+    if (thumb.tagName === "VIDEO") playOnHover(card, thumb);
+    return card;
+}
+
+// Each grid (Portfolio, Experience) shows the projects whose category matches its data-category
+function renderGrids() {
+    document.querySelectorAll(".project-grid[data-category]").forEach(grid => {
+        grid.append(...PROJECTS.filter(p => p.category === grid.dataset.category).map(createCard));
+    });
 }
 
 // ---------- Project viewer ----------
@@ -217,7 +221,8 @@ function hideModal() {
 // so the phone's back button and the X behave the same.
 function closeProject() {
     if (history.state?.project) return history.back();
-    history.replaceState(null, "", location.pathname + location.search + "#work");
+    // Land back on the section the project belongs to
+    history.replaceState(null, "", `${location.pathname}${location.search}#${currentProject?.category || "portfolio"}`);
     hideModal();
 }
 
@@ -346,6 +351,6 @@ function trackActiveSection() {
 // ---------- Start ----------
 
 $("year").textContent = new Date().getFullYear();
-renderGrid();
+renderGrids();
 trackActiveSection();
 syncWithUrl();

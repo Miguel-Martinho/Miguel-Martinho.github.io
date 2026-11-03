@@ -7,15 +7,15 @@
     <meta name="description" content="Portfolio of Miguel Martinho: environment art, props, game development and modding.">
     <title>Miguel Martinho · Portfolio</title>
     <!-- Bump ?v= whenever the CSS/JS changes, so browsers don't mix old cached files with the new page -->
-    <link rel="stylesheet" href="css/styles.css?v=11">
+    <link rel="stylesheet" href="css/styles.css?v=15">
 </head>
 <body>
-    <a class="skip-link" href="#work">Skip to content</a>
+    <a class="skip-link" href="#portfolio">Skip to content</a>
 
     <div class="layout">
         <!-- Sidebar (desktop) / top bar (mobile) -->
         <header class="sidebar">
-            <a class="profile" href="#work">
+            <a class="profile" href="#portfolio">
                 <img class="profile-pic" src="assets/images/profile.webp" alt="Portrait of Miguel Martinho">
                 <span class="profile-text">
                     <span class="profile-name">Miguel Martinho</span>
@@ -23,7 +23,8 @@
                 </span>
             </a>
             <nav class="nav" aria-label="Main">
-                <a class="nav-link" href="#work">My Work</a>
+                <a class="nav-link" href="#portfolio">Portfolio</a>
+                <a class="nav-link" href="#experience">Experience</a>
                 <a class="nav-link" href="#resources">Resources</a>
                 <a class="nav-link" href="#about">About Me</a>
                 <a class="nav-link" href="#contact">Contact</a>
@@ -31,9 +32,15 @@
         </header>
 
         <main class="content">
-            <section id="work" class="section" aria-label="My Work">
-                <!-- Cards are generated from js/projects.js -->
-                <div class="project-grid" id="projectGrid"></div>
+            <!-- Cards are generated from js/projects.js into the grid matching each project's category -->
+            <section id="portfolio" class="section">
+                <h2 class="section-title">Portfolio</h2>
+                <div class="project-grid" data-category="portfolio"></div>
+            </section>
+
+            <section id="experience" class="section">
+                <h2 class="section-title">Experience</h2>
+                <div class="project-grid" data-category="experience"></div>
             </section>
 
             <section id="resources" class="section">
@@ -55,9 +62,10 @@
                 <div class="panel">
                     <p>Want to work together? Get in touch:</p>
                     <div class="contact-links">
-                        <a class="button" href="mailto:you@example.com">Email</a>
-                        <a class="button button-ghost" href="#" target="_blank" rel="noopener">ArtStation</a>
-                        <a class="button button-ghost" href="#" target="_blank" rel="noopener">LinkedIn</a>
+                        <a class="button" href="https://www.artstation.com/miguelmartinho3d" target="_blank" rel="noopener">ArtStation</a>
+                        <a class="button button-ghost" href="https://www.linkedin.com/in/mmartinho7/" target="_blank" rel="noopener">LinkedIn</a>
+                        <!-- Public copy with email and phone removed; the original stays out of the site -->
+                        <a class="button button-ghost" href="assets/cv/miguel-martinho-cv.pdf" download="Miguel-Martinho-CV.pdf">Download CV</a>
                     </div>
                 </div>
             </section>
@@ -99,8 +107,8 @@
         <symbol id="icon-next" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
     </svg>
 
-    <script src="js/projects.js?v=11"></script>
-    <script src="js/app.js?v=11"></script>
+    <script src="js/projects.js?v=15"></script>
+    <script src="js/app.js?v=15"></script>
 
 </body>
 </html>
