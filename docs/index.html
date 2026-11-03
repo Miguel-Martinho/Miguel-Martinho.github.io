@@ -32,8 +32,10 @@
         <main class="content">
             <section id="work" class="section">
                 <h2 class="section-title">My Work</h2>
-                <!-- Cards are generated from js/projects.js -->
-                <div class="project-grid" id="projectGrid"></div>
+                <div class="panel">
+                    <!-- Cards are generated from js/projects.js -->
+                    <div class="project-grid" id="projectGrid"></div>
+                </div>
             </section>
 
             <section id="resources" class="section">
@@ -66,15 +68,27 @@
         </main>
     </div>
 
-    <!-- Project popup -->
-    <dialog class="modal" id="projectModal" aria-labelledby="modalTitle">
-        <div class="modal-inner">
-            <button class="icon-button modal-close" id="modalClose" aria-label="Close project">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
-            </button>
+    <!-- Project viewer: images stacked on the left, info on the right (like ArtStation) -->
+    <dialog class="viewer" id="projectModal" aria-labelledby="modalTitle">
+        <div class="viewer-layout" id="viewerLayout">
+            <div class="viewer-media" id="viewerMedia"></div>
+            <aside class="viewer-info" id="modalInfo"></aside>
+        </div>
 
+        <button class="icon-button viewer-close" id="modalClose" aria-label="Close project">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+        <button class="icon-button project-arrow prev" id="projectPrev" aria-label="Previous project">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <button class="icon-button project-arrow next" id="projectNext" aria-label="Next project">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+
+        <!-- Fullscreen image viewer, opened by clicking an image -->
+        <div class="lightbox" id="lightbox" hidden>
             <div class="carousel" id="carousel">
-                <div class="carousel-track" id="carouselTrack" tabindex="0" aria-label="Project images"></div>
+                <div class="carousel-track" id="carouselTrack" tabindex="0" aria-label="Fullscreen images"></div>
                 <button class="icon-button carousel-arrow prev" id="carouselPrev" aria-label="Previous image">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
                 </button>
@@ -86,8 +100,9 @@
                     <span class="carousel-counter" id="carouselCounter"></span>
                 </div>
             </div>
-
-            <article class="modal-info" id="modalInfo"></article>
+            <button class="icon-button lightbox-close" id="lightboxClose" aria-label="Close fullscreen view">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
         </div>
     </dialog>
 
