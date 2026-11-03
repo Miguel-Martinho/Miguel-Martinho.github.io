@@ -205,25 +205,31 @@ button { font: inherit; color: inherit; }
 
 /* ---------- Project grid ---------- */
 
+/* Rows of --cols cards; a row with fewer cards is centered */
 .project-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr)); /* 2 on tablets, 1 on phones (see below) */
-    gap: clamp(16px, 2.5vw, 40px);
+    --cols: 3; /* 2 on tablets, 1 on phones (see below) */
+    --gap: clamp(16px, 2.5vw, 40px);
+    /* One card's width. Used for padding too, since % padding is measured from the row, not the card */
+    --card-width: calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--gap);
 }
 
 @media (max-width: 900px) {
-    .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .project-grid { --cols: 2; }
 }
 @media (max-width: 560px) {
-    .project-grid { grid-template-columns: 1fr; }
+    .project-grid { --cols: 1; }
 }
 
 .card {
     position: relative;
     display: block;
-    width: 100%;
+    flex: 0 0 var(--card-width);
     aspect-ratio: 1;
-    padding: 5%;
+    padding: calc(var(--card-width) * .05);
     text-align: left;
     background: var(--moss);
     border: none;
