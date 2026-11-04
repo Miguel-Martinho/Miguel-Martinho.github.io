@@ -7,6 +7,8 @@
 :root {
     /* Warm olive palette: every colour shares the background's yellow-green hue */
     --page-bg: #838663;   /* page background */
+    --grid-minor: rgba(253, 255, 220, .08); /* blueprint grid lines on the page background */
+    --grid-major: rgba(253, 255, 220, .14);
     --cream: #fdffdc;     /* light text on dark, info panel, labels */
     --surface: #e7e6c6;   /* sidebar and content panels */
     --surface-dark: #d8d6b2; /* stripes on "coming soon" cards */
@@ -43,7 +45,14 @@ body {
     margin: 0;
     font-family: var(--font);
     color: var(--ink);
-    background: var(--page-bg);
+    /* Blueprint grid: a strong line every 120px over fine lines every 24px */
+    background-color: var(--page-bg);
+    background-image:
+        linear-gradient(var(--grid-major) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+        linear-gradient(var(--grid-minor) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px);
+    background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
 }
